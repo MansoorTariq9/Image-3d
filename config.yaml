@@ -1,0 +1,42 @@
+# HSI Gaussian 3D Model Configuration
+
+# Data parameters
+num_channels: 120
+wavelength_range: [400.0, 1000.0]
+image_width: 332
+image_height: 324
+background_value: 0.0
+
+# Model architecture
+latent_dim: 512
+num_views: 4
+point_cloud_size: 2048
+num_gaussians: 50000
+
+# Training parameters
+batch_size: 1
+num_epochs: 20
+learning_rate: 0.001
+num_workers: 4
+save_every: 10
+
+# Loss weights
+loss_weights:
+  spectral_mse: 1.0
+  spectral_sam: 0.1
+  depth: 0.1
+  kl: 0.001
+  smoothness: 0.01
+
+# Data preprocessing
+preprocessing:
+  background_method: "percentile"  # "corners", "percentile", "fixed"
+  normalization_method: "percentile"  # "percentile", "minmax", "standardize"
+  spectral_smoothing: true
+  smoothing_kernel_size: 3
+
+# Augmentation (training only)
+augmentation:
+  spectral_shift_range: 5.0  # nm
+  intensity_scale_range: [0.8, 1.2]
+  noise_level: 0.01

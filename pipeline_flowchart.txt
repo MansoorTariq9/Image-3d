@@ -1,0 +1,27 @@
+
+                        HSI 3D RECONSTRUCTION PIPELINE
+    ═══════════════════════════════════════════════════════════════════════
+
+    ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐
+    │  Input  │ --> │Preproc. │ --> │   VAE   │ --> │Gaussian │ --> │ Render  │
+    │   HSI   │     │ No Cal! │     │ Encode  │     │  Model  │     │ & Depth │
+    └─────────┘     └─────────┘     └─────────┘     └─────────┘     └─────────┘
+         │               │               │               │               │
+    120 channels    Background     120→16 ch      50K Gaussians    Any wavelength
+    332×324         Normalize      Cross-attn     120 spectra/pt   Depth from HSI
+    Multi-view      Smooth         Point cloud    Smooth spectra   Real-time
+
+                                        ▼
+                          ┌─────────────────────────────┐
+                          │         OUTPUTS             │
+                          │  • 3D reconstruction        │
+                          │  • Spectral at each point   │
+                          │  • Depth maps               │
+                          │  • Novel view synthesis     │
+                          └─────────────────────────────┘
+
+    KEY ADVANTAGES:
+    ✓ No calibration references needed (unlike standard HSI processing)
+    ✓ 10-100x faster than HS-NeRF (Gaussian splatting vs implicit fields)
+    ✓ Full spectral information preserved (120 channels per 3D point)
+    ✓ Wavelength-specific rendering (any λ between 400-1000nm)
