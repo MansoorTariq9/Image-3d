@@ -1,0 +1,12 @@
+{
+  "num_points": 50000,
+  "num_channels": 120,
+  "wavelength_range": [
+    400.0,
+    1000.0
+  ],
+  "exported_files": {
+    "pointcloud": "inference_output/pointcloud.ply",
+    "numpy_data": "inference_output/numpy_data"
+  }
+}

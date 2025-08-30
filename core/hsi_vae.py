@@ -152,7 +152,14 @@ class HyperspectralVAE(nn.Module):
         spatial_features = torch.stack(spatial_features, dim=1)  # [B, V, 512]
         
         # Step 3: Add positional encoding
-        spatial_features = spatial_features + self.view_pos_encoding
+        # Dynamically create positional encoding for the actual number of views
+        B, V, D = spatial_features.shape
+        if V != self.num_views:
+            # Create positional encoding for actual number of views
+            pos_encoding = nn.Parameter(torch.randn(1, V, D, device=spatial_features.device))
+            spatial_features = spatial_features + pos_encoding
+        else:
+            spatial_features = spatial_features + self.view_pos_encoding
         
         # Step 4: Cross-attention across views
         attended, _ = self.cross_attention(

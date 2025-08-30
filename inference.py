@@ -11,6 +11,7 @@ from core.spectral_gaussian import SpectralGaussian3D
 from core.hsi_vae import HyperspectralVAE
 from core.spectral_renderer import SpectralGaussianRenderer, RenderingConfig
 from core.depth_estimator import SpectralDepthEstimator
+from core.reconstruction_simple import SimpleGaussianTo3D, SimpleNovelViewSynthesis, export_3d_reconstruction
 from data.preprocessing import HSIPreprocessor, HSIConfig
 from train import HSIGaussian3DModel
 
@@ -251,6 +252,8 @@ def main():
     parser.add_argument("--output_dir", type=str, default="./inference_output", help="Output directory")
     parser.add_argument("--wavelengths", nargs="+", type=float, help="Wavelengths to render (nm)")
     parser.add_argument("--export_ply", action="store_true", help="Export point cloud as PLY")
+    parser.add_argument("--export_mesh", action="store_true", help="Export mesh reconstruction")
+    parser.add_argument("--export_novel_views", action="store_true", help="Export novel view synthesis")
     args = parser.parse_args()
     
     # Create output directory
@@ -277,12 +280,14 @@ def main():
     print("Visualizing results...")
     visualize_results(outputs, output_dir / "reconstruction_results.png")
     
-    # Export point cloud if requested
-    if args.export_ply:
-        print("Exporting point cloud...")
-        pipeline.export_point_cloud(
+    # Export 3D reconstruction in multiple formats
+    if args.export_ply or args.export_mesh:
+        print("Exporting 3D reconstruction...")
+        export_3d_reconstruction(
             outputs["gaussian_data"],
-            str(output_dir / "reconstruction.ply")
+            str(output_dir),
+            renderer=pipeline.model.renderer if args.export_novel_views else None,
+            num_novel_views=20
         )
         
     # Extract depth maps
